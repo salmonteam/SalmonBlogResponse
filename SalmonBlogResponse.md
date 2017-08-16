@@ -22,9 +22,7 @@ We encourage anyone to look at the history of the development of Salmon. We woul
 
 **The blog post links to a [github commit](https://github.com/kingsfordgroup/sailfish/commit/be0760edce11f95377088baabf72112f920874f9#diff-8341ac749ad4ac5cfcc8bfef0d6f1efaR796), dated Dec 13, 2015, showing a function that updates effective lengths, and claims that Sailfish (another piece of software we maintain; Patro et al., 2014) and Salmon use kallisto’s approach "without any attribution".** This is demonstrably false. For example, if you look at the version of the [same function a few days later](https://github.com/kingsfordgroup/sailfish/blob/39020a1c26d883bb6f1cb90b28fb03b33d4a0887/src/SailfishUtils.cpp#L670) (Dec. 18, 2015), you see that it explicitly gives credit to kallisto:
 
-<center>
 ![](figures/code-efflen.png)<br>
-</center>
 
 The direct attribution of this idea has been in the repository for over 18 months. The author of the blog post linked to an old version of the file which, unfortunately, can mislead his readers into thinking that no credit was given. What actually happened is that we implemented and incorporated an existing idea into our codebase and attributed it accordingly. Salmon, on the other hand, actually adopts a variation of a different method, due to Roberts et al. (2011), for sequence-specific bias correction, as is described and cited in the paper, and as is [mentioned in the corresponding function in the Salmon codebase](https://github.com/COMBINE-lab/salmon/blob/d061a765dc725927e8c031407ecd3ea962a2d3cd/src/SalmonUtils.cpp#L1657). The Salmon paper cites kallisto 7 times, including attributing its method for computing the effective length of transcripts.
 
@@ -36,19 +34,16 @@ log<sub>2</sub>( {Salmon<sub>gc</sub> count + 1} / {kallisto count + 1} )
 
 versus the average of the log values. If it were true that these methods are "very *very*" similar one would see most log-ratios close to 0 (within the red lines). We include a scatter plot of these same values as the one included in the blog post, to demonstrate how deceiving count scatter plots can be in this particular context:
 
-<center>
 ![](figures/figure1.png)<br>
 
 ***Figure 1. Scatterplot of Salmon counts versus kallisto counts (left). MA plot (right) showing the difference between Salmon and kallisto log<sub>2</sub> ratios versus log<sub>2</sub> averages on same sample from the blog post. We added 1 to the counts to avoid logs of 0.***
-</center>
+
 
 (All code to reproduce our results is publicly available at [https://github.com/salmonteam/SalmonBlogResponse](https://github.com/salmonteam/SalmonBlogResponse).) We note that the correlation in the other GEUVADIS (Lappalainen et al., 2013) samples are generally lower than for ERR188140. Here is a boxplot of the correlations between Salmon and kallisto for samples in the entire GEUVEDIS dataset stratified by lab and with ERR188140 **annotated:**
 
-<center>
 ![](figures/figure2a.png)
 
 ***Figure 2: Correlation between Salmon and kallisto for all samples in the GEUVADIS dataset. The correlations are stratified by sequencing center and the one sample included in the blog post, ERR188140, is highlighted. The correlations are based on log(COUNT+1) values.***
-</center>
 
 Labs 3, 2 and 5 are those more affected by GC-content bias. To make it abundantly clear that GC-content is in fact an issue with actual experimental data, below we include several other examples. Experimentation on more than just one sample demonstrates the practical utility of this feature of Salmon.
 
@@ -102,26 +97,21 @@ Nevertheless, it is a relevant question whether alternative differential express
 
 Specifically, here is the original table in the Salmon paper using t-tests on log TPM:
 
-<center>
 ![](figures/table1.jpg)<br>
 
 ***Table 1: Original FDR results using t-test from the Salmon paper.***
-</center>
 
 Here is the same table repeated using DESeq2 (left) and limma (right; Law et al. 2016) (Sensitivity at given FDR using counts):
-<center>
+
 ![](figures/table2.png)<br>
 
 ***Table 2: Updated FDR results using DESeq2 (left) and limma (right)***
-</center>
 
 These new results were created using tximport followed by **DESeq2** or tximport with "lengthScaledTPM" counts followed by **limma-voom** (Law et al. 2014, 2016). We find that Salmon with GC bias correction followed by more common tools still greatly increases sensitivity in the face of differential GC dependence compared to kallisto across a wide range of empirical FDRs. With the DE tools tested above, kallisto does suffer less in sensitivity at the lowest FDR cutoff of 1% (in our re-analysis there is only a 7% difference, whereas the original analysis with t-tests of log TPM showed a 25% difference). **kallisto still has more than 10% loss in sensitivity at 5% and 10% FDR compared to Salmon, as in the original analysis using t-tests on log TPM.** These differences in method performance are due to mis-estimation of transcript abundances in the face on non-uniform coverage (see for example MA-plots in Salmon Supplementary Figure 3). We have also updated the relevant figure of the Salmon manuscript to include this new reanalysis:
 
-<center>
 ![](figures/figure3.png)<br>
 
 ***Figure 3: Sensitivity at various FDR using t-test (solid) and other methods (non-solid)***
-</center>
 
 Again, the results are similar between our original analysis (solid line) and that using the pipeline suggested by the blog post author (non-solid lines). Also note again that Salmon and kallisto differ significantly even when using DESeq2 or limma-voom.
 
@@ -197,7 +187,6 @@ A major problem with the use of correlation is that the summary is hard to inter
 | TIGAR2 and RSEM                              | 0.970           |
 | RSEM and Cufflinks                           | 0.946           |
 | eXpress and Kalisto                          | 0.790           |
-</center>
 
 ***Table 3: Correlations between methods reported by Zhang et al. (2017)***
 
@@ -205,19 +194,17 @@ Note that the 0.971 value is computed **without** using the GC-content bias corr
 
 To understand why correlations higher than 0.97 do not necessarily mean methods are "very very" similar consider this well-known formula:
 
-<center>
-If *X* and *difference* are independent: <img src="figures/corr-eqn.png" width="400" height="42" /><br>
-</center>
+If *X* and *difference* are independent: 
+
+<img src="figures/corr-eqn.png" width="400" height="42" /><br>
 
 Suppose *X* is *log<sub>2</sub>(counts+1)* computed with kallisto. The standard deviation of X is therefore about 3.4. Suppose that *X+difference* is *log<sub>2</sub>(count+1)* computed with Salmon and that the standard deviation of the *difference* is 0.5: this means that a substantial difference of 25% between reported counts is typical. Using the formula above, despite the substantial differences, this gives us a correlation between *X* and *X+difference* of 0.99!
 
 Due to this property of the correlation, much more interpretable statistical summaries relate to how much the difference varies, for example the standard deviation of the difference or the median absolute difference. If using MAD, care should be taken due to the large number of transcripts that are 0 in all methods. This is why MA plots are a better visualization tool than scatter plots: the difference is represented in the y-axis. Below, we show an MA plot comparing kallisto to Salmon quantifications for ERR188140 (below) which reveals that, although the methods are in close agreement on this sample prepared by a center with low apparent GC bias, **the quantifications are also clearly not identical for all transcripts**. Here, we draw 5% and 95% quantile lines over the MA plot (green lines). The quantile lines show the 5% and 95% quantile of log<sub>2</sub> fold change of difference between methods, binning transcripts by their average signal (x-axis). We can see that, in the middle range of either TPM or count, nearly 10% of transcripts have double or half the estimated TPM or count across the two methods (above or below a log<sub>2</sub> fold change of 1 or -1, red dotted lines). Again, these are not identical quantifications. **Furthermore, such quantiles of log<sub>2</sub> fold changes across method widen significantly when a sample actually exhibits fragment GC bias, as we will show next.**
 
-<center>
 ![](figures/figure4.png)<br>
 
 ***Figure 4: MA plots comparing kallisto and Salmon.***
-</center>
 
 Note that the blog author’s statement that "the dataset was chosen to be older (when bias was more prevalent)" incorrectly assumes that older datasets produce more GC-content bias. A more informed assumption is that GC bias in sequencing data originates with PCR amplification and depends on thermocycler ramp speed (see, for example, Aird (2011) or t’ Hoen (2013)), and not from sequencing machines or reverse transcription protocols which may have improved in the past 5 years.
 
@@ -225,30 +212,21 @@ Note that the blog author’s statement that "the dataset was chosen to be older
 
 **Examining replicate samples processed by different labs reveals that Salmon and kallisto do not exhibit "very very strong similarity", and Salmon’s quantifications are more consistent, when comparing quantification of the same sample across labs, than kallisto’s.** In the blog post, individual samples processed by both tools are compared in which the correlation in TPM or log TPM between Salmon with fragment-GC bias correction and kallisto is greater than 0.995. However, this is not nearly conclusive that the methods are identical. The key advantage to Salmon is accurate quantification on *all* samples, and higher consistency in quantification across labs or batches. For example, in the Salmon paper we show that Salmon with GC bias correction on samples from the SEQC benchmarking dataset has lower mean absolute error in quantification compared to kallisto, when comparing the same sample within the same lab, and especially when comparing the same sample across lab (Supplementary Figure 4). We can zoom into what these errors look like for individual samples, e.g. sample "A" from SEQC sequenced by two labs: BGI and CNL. We constructed MA plots of kallisto vs. Salmon, and drew 5% and 95% quantile lines for the log<sub>2</sub> fold change between methods along the average signal. We see that, while for the BGI lab the quantifications across method are somewhat similar, for CNL the quantifications from Salmon and kallisto are very different for a number of transcripts (top row: TPM, bottom row: counts using tximport with "lengthScaledTPM" counts). Note the wide scale on the y-axis (consider, log<sub>2</sub> of 5 = 32-fold change). **These are clearly not identical methods.**
 
-<center>
 ![](figures/figure5.png)<br>
 
 ***Figure 5: MA plots comparing Salmon and kallisto for two different sequencing centers (BGI and CNL)***
 
-</center>
-
 We can make MA plots for each method, to see how *well* they can quantify **the same sample** across different labs. Either on the TPM (top row) or the count scale (bottom row), we see that **Salmon has greater consistency when comparing quantification of the same sample across labs.** The plots of the right side overlay the 5% and 95% quantile lines for both methods, where a narrower band indicates more consistent estimation. This increased consistency is due to Salmon’s unique ability to model fragment sequence bias.
 
-<center>
 ![](figures/figure6.png)<br>
 
 ***Figure 6: MA plots showing different consistency across data centers for Salmon and kallisto.***
-</center>
 
 To provide a systematic comparison of all SEQC samples without making dozens of MA-plots, we computed a one-number summary for each MA-plot related to the extent of inter-sample differences. For each pair of samples, we compute the median absolute deviation (MAD) between the samples (where the signal is given by log<sub>2</sub>(TPM + 1)), and visualize the results in a heatmap (Figure 8). Again, we observe the same trend as above. The boxes of bright color for kallisto indicates higher absolute differences in quantifying the same sample across center. Salmon yields a smaller MAD between samples, and, in particular, **Salmon has greater consistency when comparing quantification of the same sample across labs.** For a systematic figure of this analysis of SEQC samples, see Supplementary Figure 4 in the Salmon paper.
-
-<center>
 
 ![](figures/figure7a.png)<br>
 
 ***Figure 7: MAD between samples using Salmon (left) and kallisto (right).***
-
-</center>
 
 ### 3.5 Salmon’s algorithm, model, data structures, and implementation differ from kallisto’s
 
