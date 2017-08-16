@@ -10,7 +10,6 @@ maplot <- function(x, y, ...)
 ## the correlation is 
 cor(log(kallisto$counts+1), log(salmon$counts+1))
 
-### The same plot as above but with less descriptive but more readable labels
 png(file="~/Desktop/ma-plot.png",
     width=800,
     height=425)
