@@ -128,8 +128,8 @@ kallisto: 2620 DE transcripts
 </blockquote>
 
 *Now using DESeq2, and filtering out transcripts with &lt; 5 samples with normalized count &gt;= 10:*
-<blockquote>
 
+<blockquote>
 Salmon: 1605 DE transcripts
 
 kallisto: 2906 DE transcripts
