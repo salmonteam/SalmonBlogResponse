@@ -16,7 +16,7 @@ png(file="~/Desktop/ma-plot.png",
 
 par(mfrow=c(1,2),
     cex.lab = 1.35, 
-    cex.main = 1.45, 
+    cex.main = 1.4, 
     cex.axis = 1,
     mar = c(3, 3,  2.6, 0.5),
     mgp = c(1.5, 0.5, 0))
