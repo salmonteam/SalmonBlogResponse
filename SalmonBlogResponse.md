@@ -120,6 +120,7 @@ Confounding of technical artifacts such as GC dependence with the biological com
 **The results of reduced false positive DE calls claimed in the Salmon paper (Figure 1d) are also similar, no matter whether one uses the t-test or the blog author’s suggested pipeline.** We repeated the analysis of Figure 1d from the Salmon paper using the pipeline suggested by the blog post author. The results are qualitatively the same: Salmon still reduces the number of DE calls by approximately the same factor:
 
 *As in the Salmon paper, using log(TPM + 1) and filtering out transcripts with mean(TPM) &lt; .01:*
+
 <blockquote>
 Salmon: 1171 DE transcripts
 
@@ -127,15 +128,19 @@ kallisto: 2620 DE transcripts
 
 (kallisto = 2.2x more False Positives)
 </blockquote>
+
 *Now using DESeq2, and filtering out transcripts with &lt; 5 samples with normalized count &gt;= 10:*
 <blockquote>
+
 Salmon: 1605 DE transcripts
 
 kallisto: 2906 DE transcripts
 
 (kallisto = 1.8x more False Positives)
 </blockquote>
+
 *Now using limma, with limma default filtering (&lt; 5 samples with CPM &gt;= 10/L, where L is millions of reads for the smallest library):*
+
 <blockquote>
 Salmon: 1064 DE transcripts
 
@@ -143,6 +148,7 @@ kallisto: 2410 DE transcripts
 
 (kallisto = 2.3x more False Positives)
 </blockquote>
+
 On the GEUVADIS comparison test included in the Salmon paper, no matter whether you use the t-test, DESeq2, or limma to call DE, Salmon produces far fewer DE calls.
 
 **We are unable to reproduce the results of the blog post showing the overlap in DE predictions on the the Trapnell et al. (2013) data set.** In the blog post, Venn diagrams with large overlaps are shown between the DE calls of Salmon and kallisto when run on the data from Trapnell et al., 2013. Specifically, the numbers reported on the blog are:
