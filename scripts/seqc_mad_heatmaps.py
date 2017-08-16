@@ -12,7 +12,7 @@ def main():
     d = {'sal_bc' : {}, 'kal_bc' : {}}
     t = pd.read_table('seqc_samples.tsv')
     for sn in set(t['id']):
-        # these are for sample A
+        # these are for sample B
         if sn.startswith('A'):
             continue
         d['sal_bc'][sn] = pd.read_table(sn + '/quant_bc/quant.sf').set_index('Name')['TPM'].values
